@@ -77,7 +77,7 @@ def parse_args():
 
 
 def get_files(input_path: Path) -> List[str]:
-    supported_file_types = ["jsonl.zst", ".txt", ".xz", ".tar.gz"]
+    supported_file_types = ["jsonl.zst", ".txt", ".xz", ".tar.gz", ".csv"]
     if input_path.is_dir():
         # get all files with supported file types
         files = [list(Path(input_path).glob(f"*{ft}")) for ft in supported_file_types]
@@ -91,7 +91,6 @@ def get_files(input_path: Path) -> List[str]:
         files = [input_path]
     else:
         raise FileNotFoundError(f"No such file or directory: {input_path=}")
-
     return [str(f) for f in files]
 
 
@@ -199,7 +198,6 @@ def file_to_tokenized_docs_generator(file_path, encoder, args):
     reader = Reader(file_path)
     string_iterable = reader.stream_data(threaded=False)
     string_iterable = eot_splitting_generator(string_iterable, encoder)
-
     token_list_gen = prep_and_tokenize_generator(string_iterable,
                                                  encoder,
                                                  normalize_with_ftfy=args.normalize_with_ftfy,
